@@ -1,0 +1,21 @@
+<!-- templates/base.html -->
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Lumino - Login</title>
+	<link href="{% static 'lumino/css/bootstrap.min.css' %}" rel="stylesheet">
+	<link href="{% static 'lumino/css/datepicker3.css' %}" rel="stylesheet">
+	<link href="{% static 'lumino/css/styles.css' %}" rel="stylesheet">
+</head>
+<body>
+  <main>
+    {% block content %}
+    {% endblock %}
+  </main>
+	<script src="{% static 'lumino/js/jquery-1.11.1.min.js' %}"></script>
+	<script src="{% static 'lumino/js/bootstrap.min.js' %}"></script>
+</body>
+</html>

@@ -1,21 +1,40 @@
 from api.models import Product, ProductGroup, User, SFCombination, SFItem, SFValue, ProductPhoto
 from .serializer import ProductSerializer, ProductGroupSerializer, UserSerializer, SFCombinationSerializer, SFItemSerializer, SFValueSerializer, ProductPhotoSerializer
 from rest_framework import viewsets
-from rest_framework.authentication import SessionAuthentication
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 import collections
 
-class PGsView(viewsets.ModelViewSet):
+class MainView(viewsets.ModelViewSet):
     queryset = ProductGroup.objects.all()
     serializer_class = ProductGroupSerializer
-    authentication_classes = (SessionAuthentication,)
+    authentication_classes = (SessionAuthentication, TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
+    
+    @action(detail=False)
+    def count(self, request):
+        user_id = request.query_params.get('user_id')
+        if not user_id:
+            return Response("user_id is required") 
+        elif request.user.id != user_id:
+            return Response("Error: You dont have permission")
+        query = ProductGroup.objects.filter(user_id=user_id)
+        serializer = self.get_serializer(query, many=True)  
+        result = {len(serializer.data)}  
+        return Response(result)
+
     @action(detail=False)
     def by_user(self, request):
         user_id = request.query_params.get('user_id')
+        if not user_id:
+            return Response("user_id is required") 
+        elif int(request.user.id) != int(user_id):
+            print("current user = " + str(user_id))
+            print("request user = " + str(request.user.id))
+            return Response("Error: You dont have permission")
         query = ProductGroup.objects.filter(user_id=user_id)
         serializer = self.get_serializer(query, many=True)
         result = collections.OrderedDict()

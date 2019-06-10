@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'rest_framework',
     'corsheaders',
+    'rest_framework.authtoken'
 ]
 
 MIDDLEWARE = [
@@ -58,6 +59,7 @@ ROOT_URLCONF = 'disbotapi.urls'
 
 CORS_ORIGIN_ALLOW_ALL = False
 
+ALLOWED_HOSTS = {'localhost', '127.0.0.1', '13.70.55.225'}
 
 TEMPLATES = [
     {
@@ -83,6 +85,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES' : (
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication'
     ),
 }
 

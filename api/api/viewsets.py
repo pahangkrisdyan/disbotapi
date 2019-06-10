@@ -17,9 +17,12 @@ class MainView(viewsets.ModelViewSet):
     @action(detail=False)
     def count(self, request):
         user_id = request.query_params.get('user_id')
+        user_id = request.query_params.get('user_id')
         if not user_id:
             return Response("user_id is required") 
-        elif request.user.id != user_id:
+        elif int(request.user.id) != int(user_id):
+            print("current user = " + str(user_id))
+            print("request user = " + str(request.user.id))
             return Response("Error: You dont have permission")
         query = ProductGroup.objects.filter(user_id=user_id)
         serializer = self.get_serializer(query, many=True)  
@@ -41,6 +44,7 @@ class MainView(viewsets.ModelViewSet):
         for pgraw in serializer.data:
             pg = collections.OrderedDict()
             pg["name"] = pgraw["name"]
+            pg["id"] = pgraw["id"]
             pg["price"] = pgraw["price"]
             pg["is_all_price"] = pgraw["is_all_price"]
             
@@ -50,7 +54,7 @@ class MainView(viewsets.ModelViewSet):
             for phoraw in serializerPhoto.data:
                 temp = pg["photos"]
                 pg["photos"][len(temp)] = phoraw["url"]
-            
+                
             pg["products"] = {}
             queryProduct = Product.objects.filter(product_group_id=pgraw["id"])
             serializerProduct = ProductSerializer(queryProduct, many=True)

@@ -136,6 +136,20 @@
 	<script src="{% static 'lumino/js/easypiechart-data.js' %}"></script>
 	<script src="{% static 'lumino/js/bootstrap-datepicker.js' %}"></script>
 	<script src="{% static 'lumino/js/custom.js'%}"></script>
+	{% block dashboard %}
+		{% if dashboard %}
+			<script>
+				prod_count_url = "http://localhost:8000/api/products/count"
+				$.getJSON( prod_count_url, {
+						format: "json",
+						user_id: "{{user.id}}"
+					})
+					.done(function( data ) {
+						$(".product-count-element").html(data);
+					});
+			</script>
+		{% endif %}
+	{% endblock %}
 	{% block products %}
 		{% if products %}
 			<script>
@@ -187,13 +201,15 @@
 								+ tableElement+'</div></div></div></li>';
 
 							$('#product-list').append(productGroupElement);
-
+							
 							$("#searchProductOn" + productGroup.id).on("keyup", function() {
-							var value = $(this).val().toLowerCase();
-							$("#tableOn"+productGroup.id+" tr").filter(function() {
-								$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+
+								var value = $(this).val().toLowerCase();
+								
+								$("#tableOn"+productGroup.id+" tr").filter(function() {
+									$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+								});
 							});
-						});
 						}
 					});
 					$("#searchProductGroup").on("keyup", function() {
